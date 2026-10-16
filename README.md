@@ -18,6 +18,7 @@ Short version: open `build/RYDE.rbxl` in Roblox Studio and press **Play**.
 - [Testing](docs/TESTING.md) — automated tests and manual checklists
 - [Architecture](docs/ARCHITECTURE.md) — project layout and key technical decisions
 - [Progress](docs/PROGRESS.md) — milestone status, limitations, next steps
+- [Quality audit](docs/QUALITY_AUDIT.md) — honest review of v0.2.0 and the improvement plan
 
 ## Developer setup
 

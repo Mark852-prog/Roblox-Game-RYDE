@@ -1,0 +1,42 @@
+RYDE BikePhysics offline reproduction (model of the force laws, not a Roblox playtest)
+Vehicle: VoltraStorm, gravity 35 studs/s^2, physics 240 Hz
+
+S1 settle at rest (released 0.5 studs high)
+  60 fps current : final COM height 3.036  bounces 5  max load 1.47 g
+  60 fps proposed: final COM height 3.036  bounces 5  max load 1.12 g
+  30 fps current : final COM height 3.036  bounces 7  max load 1.84 g
+  30 fps proposed: final COM height 3.036  bounces 6  max load 1.13 g
+  20 fps current : final COM height 3.036  bounces 8  max load 2.05 g
+  20 fps proposed: final COM height 3.036  bounces 6  max load 1.40 g
+
+S2 drop landing, 1.5 m, flat, 10 studs/s forward
+  60 fps current : first-contact damper force 2.10 x weight, peak suspension load 8.98 x weight, chassis box min clearance 0.67 studs, missed contacts 0
+  60 fps proposed: first-contact damper force 3.40 x weight, peak suspension load 9.31 x weight, chassis box min clearance 0.69 studs, missed contacts 0
+  30 fps current : first-contact damper force 2.78 x weight, peak suspension load 12.00 x weight, chassis box min clearance -0.08 studs, missed contacts 0
+  30 fps proposed: first-contact damper force 3.50 x weight, peak suspension load 12.00 x weight, chassis box min clearance -0.03 studs, missed contacts 0
+  20 fps current : first-contact damper force 0.70 x weight, peak suspension load 12.00 x weight, chassis box min clearance -0.13 studs, missed contacts 0
+  20 fps proposed: first-contact damper force 3.40 x weight, peak suspension load 12.00 x weight, chassis box min clearance -0.05 studs, missed contacts 0
+
+S3a wheelie hold: rider pops the front (0.6 s), then modulates throttle to hold 25 deg
+  60 fps current : held pitch   9.7 deg (swing  15.0), looped out: False, forward accel during hold  4.96 m/s^2
+  60 fps proposed: held pitch 609.0 deg (swing 844.2), looped out: True, forward accel during hold  0.00 m/s^2
+  30 fps current : held pitch 1199.5 deg (swing 3031.5), looped out: True, forward accel during hold  5.19 m/s^2
+  30 fps proposed: held pitch 573.0 deg (swing 795.0), looped out: True, forward accel during hold  0.00 m/s^2
+
+S3b wheelie tap: throttle + lean back for 0.4 s, then release
+  60 fps current : peak pitch  21.4 deg, pitch after 4 s  -0.0 deg
+  60 fps proposed: peak pitch  37.0 deg, pitch after 4 s  -0.0 deg
+
+S4 stoppie hold: rider modulates the front brake to hold -12 deg from 40 km/h
+  60 fps current : lowest pitch  -25.6 deg, flipped: False, stopped after 2.166666666666669 s
+  60 fps proposed: lowest pitch  -22.0 deg, flipped: False, stopped after 1.666666666666662 s
+
+S5 step steer (yaw response); steady-state target = kinematic yaw rate v*tan(d)/L
+  15 km/h, 20 deg, 60 fps, stiffness 0.75 (current): target 1.204 rad/s, peak 1.192, settled 1.192, oscillations 0, ripple 0.000
+  15 km/h, 20 deg, 60 fps, stiffness 0.35 (softer): target 1.204 rad/s, peak 1.179, settled 1.179, oscillations 0, ripple 0.000
+  15 km/h, 20 deg, 30 fps, stiffness 0.75 (current): target 1.204 rad/s, peak 1.181, settled 1.181, oscillations 0, ripple 0.000
+  15 km/h, 20 deg, 30 fps, stiffness 0.35 (softer): target 1.204 rad/s, peak 1.156, settled 1.155, oscillations 0, ripple 0.000
+  50 km/h, 3 deg, 60 fps, stiffness 0.75 (current): target 0.578 rad/s, peak 0.578, settled 0.577, oscillations 1, ripple 0.000
+  50 km/h, 3 deg, 60 fps, stiffness 0.35 (softer): target 0.578 rad/s, peak 0.577, settled 0.577, oscillations 0, ripple 0.000
+  50 km/h, 3 deg, 30 fps, stiffness 0.75 (current): target 0.578 rad/s, peak 0.592, settled 0.577, oscillations 1, ripple 0.000
+  50 km/h, 3 deg, 30 fps, stiffness 0.35 (softer): target 0.578 rad/s, peak 0.576, settled 0.576, oscillations 0, ripple 0.000

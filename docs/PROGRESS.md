@@ -1,5 +1,8 @@
 # Progress
 
+> **Feature work is paused for a quality overhaul.** See [QUALITY_AUDIT.md](QUALITY_AUDIT.md)
+> for the findings and the phased plan (waiting for approval).
+
 Status key: ✅ done & verified in Roblox · 🟡 implemented & auto-tested, waiting for your Studio test · ⬜ not started
 
 | # | Milestone | Status |
