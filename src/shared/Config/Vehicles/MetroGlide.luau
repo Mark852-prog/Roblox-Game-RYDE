@@ -12,7 +12,7 @@ local config: VehicleSchema.VehicleConfig = {
 	price = 3500,
 	riderPose = "Seated",
 
-	chassis = { massKg = 26, wheelbaseM = 1.12, comHeightM = 1.05, comFromRearM = 0.45 },
+	chassis = { massKg = 26, wheelbaseM = 1.12, comHeightM = 1.05, comFromRearM = 0.45, dragAreaM2 = 0.50 },
 	wheels = { frontRadiusM = 0.36, rearRadiusM = 0.36 },
 	motor = {
 		peakPowerW = 750,
@@ -22,7 +22,7 @@ local config: VehicleSchema.VehicleConfig = {
 		throttleFallTime = 0.3,
 		regenForceN = 10,
 	},
-	brakes = { frontMaxForceN = 800, rearMaxForceN = 450 },
+	brakes = { frontMaxForceN = 800, rearMaxForceN = 380 },
 	steering = {
 		maxSteerDegLowSpeed = 30,
 		maxSteerDegHighSpeed = 5,

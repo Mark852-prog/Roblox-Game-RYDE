@@ -12,11 +12,11 @@ local config: VehicleSchema.VehicleConfig = {
 	price = 0,
 	riderPose = "Seated",
 
-	chassis = { massKg = 57, wheelbaseM = 1.26, comHeightM = 0.85, comFromRearM = 0.62 },
+	chassis = { massKg = 57, wheelbaseM = 1.26, comHeightM = 0.85, comFromRearM = 0.62, dragAreaM2 = 0.60 },
 	wheels = { frontRadiusM = 0.33, rearRadiusM = 0.33 },
 	motor = {
 		peakPowerW = 6000,
-		maxDriveForceN = 1000,
+		maxDriveForceN = 900, -- Just below the no-lean wheelie threshold: lean back to lift the front
 		topSpeedKmh = 75,
 		throttleRiseTime = 0.25,
 		throttleFallTime = 0.15,

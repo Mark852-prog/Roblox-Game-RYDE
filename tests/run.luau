@@ -16,7 +16,10 @@ local results = TestRunner.run({
 	["2 Units"] = require("./specs/Units.spec"),
 	["3 SurfaceConfig"] = require("./specs/SurfaceConfig.spec"),
 	["4 VehicleConfigs"] = require("./specs/VehicleConfigs.spec"),
-	["5 PlaceFile"] = require("./specs/PlaceFile.spec"),
+	["5 VehicleMath"] = require("./specs/VehicleMath.spec"),
+	["6 VehicleModels"] = require("./specs/VehicleModels.spec"),
+	["7 SoundConfig"] = require("./specs/SoundConfig.spec"),
+	["8 PlaceFile"] = require("./specs/PlaceFile.spec"),
 })
 
 print(`\n{results.passed} passed, {results.failed} failed`)

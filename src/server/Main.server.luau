@@ -16,6 +16,9 @@ local GameConfig = require(Shared.Config.GameConfig)
 local Units = require(Shared.Util.Units)
 local VehicleCatalog = require(Shared.Config.VehicleCatalog)
 
+local VehicleService = require(script.Parent.Services.VehicleService)
+local WorldService = require(script.Parent.Services.WorldService)
+
 local PREFIX = "[RYDE]"
 
 print(`{PREFIX} Server starting - version {GameConfig.VERSION} ({GameConfig.MILESTONE})`)
@@ -42,10 +45,25 @@ else
 	print(`{PREFIX} {#VehicleCatalog.List} vehicle configs validated OK`)
 end
 
-if not Workspace:FindFirstChild("TestTrack") then
+if not Workspace:FindFirstChild("World") then
 	healthy = false
-	warn(`{PREFIX} Workspace.TestTrack is missing - the test map did not load`)
+	warn(`{PREFIX} Workspace.World is missing - the map did not load`)
 end
+
+local assets = ReplicatedStorage:FindFirstChild("Assets")
+local vehicleModels = assets and assets:FindFirstChild("Vehicles")
+if not vehicleModels or #vehicleModels:GetChildren() == 0 then
+	healthy = false
+	warn(`{PREFIX} ReplicatedStorage.Assets.Vehicles is missing - no bikes can spawn`)
+end
+
+-- Start game systems.
+local ok, err = pcall(WorldService.start)
+if not ok then
+	healthy = false
+	warn(`{PREFIX} WorldService failed: {err}`)
+end
+VehicleService.start()
 
 -- Clients read this to confirm they are talking to a correctly started server.
 Workspace:SetAttribute("RYDEServerVersion", GameConfig.VERSION)

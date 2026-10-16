@@ -8,10 +8,9 @@
 	newtons, km/h) because those are easy to compare against real bikes.
 	Anything that talks to the Roblox physics engine converts through here.
 
-	Scale decision: 1 stud = 0.35 m.
-	  Roblox's own documentation uses 0.28 m, but the default R15 character is
-	  about 5 studs tall; at 0.35 m/stud that is ~1.75 m, a typical adult, so
-	  bikes built to real dimensions look correctly sized next to the rider.
+	Scale: Roblox's standard units (create.roblox.com/docs/physics/units):
+	  1 stud = 0.28 m, 1 RMU (mass unit) = 21.952 kg, realistic gravity = 35 studs/s^2.
+	  Roblox recommends these so the game behaves as expected everywhere.
 
 	Workspace.Gravity must equal GRAVITY_STUDS (set in default.project.json).
 	The server checks this at startup and a unit test checks the project file.
@@ -19,12 +18,18 @@
 
 local Units = {}
 
-Units.METERS_PER_STUD = 0.35
+Units.METERS_PER_STUD = 0.28
 Units.STUDS_PER_METER = 1 / Units.METERS_PER_STUD
 
 Units.GRAVITY_MPS2 = 9.81
--- 9.81 / 0.35 = 28.03 studs/s^2 (Roblox's default 196.2 is ~7x real gravity at this scale).
-Units.GRAVITY_STUDS = math.floor(Units.GRAVITY_MPS2 / Units.METERS_PER_STUD * 100 + 0.5) / 100
+-- Roblox's "Realistic" preset. (The engine default, 196.2, is ~5.6x real gravity.)
+Units.GRAVITY_STUDS = 35
+
+Units.KG_PER_RMU = 21.952
+
+function Units.kgToRmu(kg: number): number
+	return kg / Units.KG_PER_RMU
+end
 
 function Units.metersToStuds(meters: number): number
 	return meters * Units.STUDS_PER_METER

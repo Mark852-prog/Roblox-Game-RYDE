@@ -3,8 +3,8 @@
 A semi-realistic Roblox riding game: electric dirt bikes, e-bikes and
 scooters, wheelies and stunts, traffic, police pursuits, crashes and damage.
 
-**Current state: Milestone 1 — project setup and vehicle test track.**
-No bikes yet. See [docs/PROGRESS.md](docs/PROGRESS.md).
+**Current state: version 0.2.0 — first rideable bikes, garage lobby, town and
+countryside map, sound.** See [docs/PROGRESS.md](docs/PROGRESS.md).
 
 ## Play it in Roblox Studio
 
@@ -36,8 +36,8 @@ rojo serve             # optional: live-sync into Studio with the Rojo plugin
 src/shared   -> ReplicatedStorage.Shared                     configs, units, validation
 src/server   -> ServerScriptService.Server                   server logic
 src/client   -> StarterPlayer.StarterPlayerScripts.Client    input, UI
-assets/      generated models (TestTrack.rbxm)
-tools/       map generator and build script
+assets/      generated models (World.rbxm, Vehicles.rbxm)
+tools/       world + vehicle generators and build script
 tests/       Lune test suite
 build/       RYDE.rbxl — the place file to open in Studio
 ```

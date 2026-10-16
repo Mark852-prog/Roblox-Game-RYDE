@@ -6,66 +6,74 @@
 ./tools/build.sh
 ```
 
-Regenerates the map, builds `build/RYDE.rbxl`, lints with Selene and runs
-the Lune test suite. What the automated tests cover:
+Regenerates the world and bike models, builds `build/RYDE.rbxl`, lints
+with Selene and runs the Lune test suite (107 tests). They cover:
 
 - Every `.luau` file in `src/` compiles.
-- Unit conversions and the gravity value (including that
-  `default.project.json` sets the matching `Workspace.Gravity`).
-- `SurfaceConfig`: sane values, every key is a real Roblox material,
-  attribute overrides and fallbacks.
-- Vehicle configs: all four validate, and the validator catches eight kinds
-  of broken config.
-- The built place file: scripts are the right type in the right service,
-  world settings, every test zone exists, only cones/crates are unanchored,
-  no oversized parts, road paint is non-colliding, road surface height.
+- Units and gravity (and that the project file matches).
+- Surface table, vehicle configs and the config validator.
+- **Handling design checks** computed from the real config numbers: each
+  bike reaches ~its top speed; Voltra Storm does 0–50 km/h in < 4 s;
+  Kestrel out-accelerates Voltra; Voltra only wheelies when you lean back;
+  the normal brake never flips a bike; the front brake can do a stoppie;
+  steering lock shrinks with speed and on slippery surfaces.
+- Bike model structure (only the chassis has mass, joints exist, seat
+  can't be touch-sat, IK attachments, mass = bike + rider).
+- Sound config.
+- The built place: scripts in the right services, lighting, world zones,
+  garage lobby pieces, part budget, decoration doesn't block wheels.
 
-**What they can't cover:** anything needing the real Roblox engine —
-physics, rendering, player input, networking. Those need the manual checks below.
+**What they can't cover:** the real Roblox engine — physics behaviour,
+rendering, sound playback, input, networking. Those need the checks below.
 
-## Milestone 1 manual checklist (in Roblox Studio)
+## Milestone 2 checklist (in Roblox Studio)
 
-Open `build/RYDE.rbxl` and press **Play** (see [GETTING_STARTED.md](GETTING_STARTED.md)).
+Open the new `build/RYDE.rbxl`, then **Home → Play**. Tick what works,
+and for anything that doesn't, tell me what happened.
 
-### Start-up
-- [ ] You spawn on the concrete plaza facing the blue "RYDE TEST TRACK" sign.
-- [ ] HUD (top-left) shows `Server: OK (v0.1.0)`.
-- [ ] Output shows `[RYDE] Server ready - all startup checks passed` and no red errors.
-- [ ] **F2** hides and shows the HUD.
+### Lobby & menu
+- [ ] You see the garage showroom: dark room, teal neon, a bike turning on a platform, the RYDE menu on the left, music playing.
+- [ ] Hovering the menu items highlights them with a click sound.
+- [ ] **GARAGE** lists 4 vehicles; Voltra Storm "OWNED", Kestrel Sting "TEST RIDE", the other two "COMING SOON". Selecting Kestrel swaps the showroom bike and the stats card.
+- [ ] **SETTINGS**: switches and volume sliders respond. **CONTROLS** shows the key list.
+- [ ] **PLAY** fades to black and you appear sitting on your bike inside the garage, facing out.
 
-### HUD readings
-- [ ] Standing still: Speed ≈ 0.0 km/h.
-- [ ] Walking: Speed ≈ 20 km/h (walk speed 16 studs/s × 0.35 m × 3.6).
-- [ ] On the plaza: `Surface: Concrete [Concrete]`, `Grip: 0.95`.
-- [ ] On the grass: `Surface: Grass [Grass]`, `Grip: 0.60`.
-- [ ] On the road: `Surface: Asphalt [Asphalt]`, `Grip: 1.00`.
-- [ ] At the top of a jump: `Surface: (airborne)` briefly appears.
+### Riding (Voltra Storm)
+- [ ] **W** accelerates smoothly (not instantly); the speedometer climbs to ~75 km/h on the long straight.
+- [ ] **S** slows you firmly without flipping you over.
+- [ ] **A / D** steer. At walking pace the bars turn a lot; at speed the bike turns gently and **leans** into the corner.
+- [ ] The bike stays upright when stopped and at low speed.
+- [ ] **Shift + W** from slow speed lifts the front wheel (WHEELIE pill shows the angle). Releasing throttle brings it down. Holding too long flips the bike backwards → press **R**.
+- [ ] **Space** at speed (front brake) lifts the rear (STOPPIE). **Shift** while braking keeps the rear down.
+- [ ] Riding over the **bumps lane**: rumble strip, speed bumps and curbs make the suspension move, nothing launches you into the sky.
+- [ ] **Jump park**: the bike leaves the kicker, flies (AIR pill shows time) and lands with a thump. **Shift/Ctrl** in the air rotates the bike a little.
+- [ ] **Surface strips**: grass, sand and mud feel slower and slidier than asphalt (and the speedometer shows the surface name).
+- [ ] **F** gets you off; the bike stands on its kickstand. Walk up and press **E** to ride again.
+- [ ] **R** stands a fallen bike back up.
 
-### Map walk-through (look for floating, sunken, or flickering parts)
+### Sound
+- [ ] Electric whine rises in pitch with speed.
+- [ ] Rolling noise on asphalt, crunching on dirt/gravel, wind at speed.
+- [ ] A thump on landing. Birds/distant traffic ambience in the world.
+- [ ] If any sound is missing, wrong, or annoying, tell me which one.
 
-Directions are from where you spawn: "ahead" is the way you face, "behind" is
-back past the spawn pad. The map is about 1,000 studs across — roughly a
-minute of walking from one side to the other. You can also stop the game
-and fly the editor camera around instead (right mouse button + W A S D, E/Q for up/down).
+### World
+- [ ] Grass terrain with waving grass blades, a lake with a beach and pier, hills, mountains at the edges, forests.
+- [ ] Town (past the oval's far end): streets with kerbs, shops with signs, parked cars, street lights.
+- [ ] No floating or sunken objects; nothing you fall through.
 
-- [ ] **Oval track** (ahead of spawn): smooth curves, white edge lines, yellow dashed centre lines on the straights.
-- [ ] **Main straight** (the near straight): start line + "ACCELERATION TEST" sign at the right-hand end; 100–500 boards; red brake line and white lines toward the left-hand end.
-- [ ] **Skills pad** (right side of the infield): 15 orange cones in a line (they can be knocked over), white & yellow circle dots, wooden balance plank.
-- [ ] **Jump park** (centre of the infield, brown dirt): 4 lanes — small table, medium table, gap jump, drop-off — ramps rise as you ride away from the near straight.
-- [ ] **Surface strips** (left side of the infield): 7 strips with names painted at the end nearest the spawn. Check the HUD on each: Asphalt, Concrete, LeafyGrass, Dirt (Ground), Gravel (Pebble), Sand, Mud.
-- [ ] **Bumps & curbs lane** (just beyond the far straight): rumble strip, 3 yellow speed bumps, 3 curbs, broken pavement patches, dirt whoops.
-- [ ] **Hill** (far right): two climbs (gentle and steep), a flat top, and a descent on the far side.
-- [ ] **Dirt trail** (far left): a brown loop path.
-- [ ] **Crash test lane** (behind the spawn): loose crates, lamp post, red car-sized block, concrete wall with red stripes at the right-hand end.
-- [ ] Signs are readable from the direction you approach them. Painted ground labels read the right way up when you approach them from the spawn side.
+### Multiplayer (optional, Studio → Test → Clients and Servers, 2 players)
+- [ ] Each player gets their own bike; you can't ride the other player's bike (no Ride prompt on it).
+- [ ] You see the other player's bike lean, steer and make sounds.
 
-### Things we know can't be judged yet
-Ramp angles, bump heights and the track layout were chosen for the bike
-that arrives in Milestone 2; whether they *feel* right can only be judged by riding.
+### Performance
+- [ ] Turn on the developer overlay (F2): FPS stays smooth (50+) while riding around town.
 
 ## Results log
 
-| Date | Milestone | Who | Result |
+| Date | Version | Who | Result |
 |---|---|---|---|
-| 2026-10-16 | M1 | Claude (automated) | `tools/build.sh`: 51/51 tests passed, Selene 0 warnings |
-| — | M1 | You (Studio) | *Not yet tested* |
+| 2026-10-16 | 0.1.0 | Claude (automated) | 51/51 tests passed, Selene clean |
+| 2026-10-16 | 0.1.0 | You (Studio) | Place opens, `Server: OK`, HUD and map visible ✅ |
+| 2026-10-16 | 0.2.0 | Claude (automated) | 107/107 tests passed, Selene clean |
+| — | 0.2.0 | You (Studio) | *Not yet tested* |

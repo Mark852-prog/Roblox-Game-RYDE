@@ -2,14 +2,15 @@
 --[[
 	DebugHud
 
-	A small developer overlay in the top-left corner showing:
+	A developer overlay (top-left, under the menu button) showing:
 	  - game version and whether the server started correctly
 	  - frames per second
 	  - your speed (km/h, mph, studs/s)
 	  - the surface under you and its grip value from SurfaceConfig
+	  - while riding: suspension compression, tyre slip, pitch, airtime
 	  - your position (useful when reporting problems)
 
-	Press F2 to show or hide it.
+	Press F2 (or use Settings) to show or hide it.
 ]]
 
 local Players = game:GetService("Players")
@@ -17,6 +18,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
+
+local Settings = require(script.Parent.Parent.Settings)
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local GameConfig = require(Shared.Config.GameConfig)
@@ -39,8 +42,8 @@ local function createGui(): (ScreenGui, TextLabel)
 	local label = Instance.new("TextLabel")
 	label.Name = "Info"
 	label.AnchorPoint = Vector2.new(0, 0)
-	label.Position = UDim2.fromOffset(12, 12)
-	label.Size = UDim2.fromOffset(400, 160)
+	label.Position = UDim2.fromOffset(16, 60)
+	label.Size = UDim2.fromOffset(420, 250)
 	label.BackgroundColor3 = Color3.fromRGB(15, 18, 24)
 	label.BackgroundTransparency = 0.35
 	label.BorderSizePixel = 0
@@ -89,15 +92,21 @@ local function serverStatus(): string
 	return `PROBLEMS - check Output (v{version})`
 end
 
-function DebugHud.start(visible: boolean)
+function DebugHud.start(visible: boolean, rides: { getSession: () -> any })
 	local player = Players.LocalPlayer
 	local gui, label = createGui()
+	Settings.set("debugHud", visible)
 	gui.Enabled = visible
 	gui.Parent = player:WaitForChild("PlayerGui")
 
+	Settings.onChanged(function(key, value)
+		if key == "debugHud" then
+			gui.Enabled = value == true
+		end
+	end)
 	UserInputService.InputBegan:Connect(function(input: InputObject, gameProcessed: boolean)
 		if not gameProcessed and input.KeyCode == TOGGLE_KEY then
-			gui.Enabled = not gui.Enabled
+			Settings.set("debugHud", not Settings.get("debugHud"))
 		end
 	end)
 
@@ -145,6 +154,34 @@ function DebugHud.start(visible: boolean)
 			table.insert(lines, "Character: not spawned")
 		end
 
+		local session = rides.getSession()
+		if session then
+			local t = session.physics.telemetry
+			table.insert(lines, string.format("Bike: %s  throttle %.2f  brake %.2f", session.spec.config.id, t.throttle, t.brake))
+			table.insert(
+				lines,
+				string.format(
+					"Front: %s comp %.2f/%.2f slip %.2f %s",
+					if t.front.grounded then "GND" else "AIR",
+					t.front.compression,
+					session.spec.front.travel,
+					t.front.slip,
+					t.front.surface
+				)
+			)
+			table.insert(
+				lines,
+				string.format(
+					"Rear:  %s comp %.2f/%.2f slip %.2f %s",
+					if t.rear.grounded then "GND" else "AIR",
+					t.rear.compression,
+					session.spec.rear.travel,
+					t.rear.slip,
+					t.rear.surface
+				)
+			)
+			table.insert(lines, string.format("Pitch %.1f deg  steer %.1f deg  air %.1fs", math.deg(t.pitch), math.deg(t.steer), t.airTime))
+		end
 		table.insert(lines, "F2: hide/show")
 		label.Text = table.concat(lines, "\n")
 	end)

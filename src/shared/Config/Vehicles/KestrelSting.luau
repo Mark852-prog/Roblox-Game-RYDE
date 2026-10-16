@@ -1,6 +1,6 @@
 --!strict
 -- Kestrel Sting: heavier, more powerful electric dirt bike.
--- Fictional brand. Planned for Milestone 7; values are first estimates.
+-- Fictional brand. Rideable in Studio for testing; purchasable in Milestone 7.
 local VehicleSchema = require(script.Parent.Parent.Parent.Vehicle.VehicleSchema)
 
 local config: VehicleSchema.VehicleConfig = {
@@ -8,11 +8,11 @@ local config: VehicleSchema.VehicleConfig = {
 	displayName = "Kestrel Sting",
 	manufacturer = "Kestrel",
 	category = "ElectricDirtBike",
-	status = "Planned",
+	status = "Prototype",
 	price = 12000,
 	riderPose = "Seated",
 
-	chassis = { massKg = 66, wheelbaseM = 1.30, comHeightM = 0.88, comFromRearM = 0.64 },
+	chassis = { massKg = 66, wheelbaseM = 1.30, comHeightM = 0.88, comFromRearM = 0.64, dragAreaM2 = 0.62 },
 	wheels = { frontRadiusM = 0.34, rearRadiusM = 0.33 },
 	motor = {
 		peakPowerW = 8000,

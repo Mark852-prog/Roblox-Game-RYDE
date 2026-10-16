@@ -1,51 +1,76 @@
 # Progress
 
-Status key: ✅ done & verified · 🟡 implemented, not yet verified in Roblox · ⬜ not started
+Status key: ✅ done & verified in Roblox · 🟡 implemented & auto-tested, waiting for your Studio test · ⬜ not started
 
 | # | Milestone | Status |
 |---|---|---|
-| 1 | Project setup & test environment | 🟡 Built and auto-tested; waiting for your Studio check |
-| 2 | First rideable bike | ⬜ |
-| 3 | Riding physics (suspension, lean, wheelies, air, surfaces) | ⬜ |
+| 1 | Project setup & test environment | ✅ You confirmed it opens and `Server: OK` (screenshot, 2026-10-16) |
+| 2 | First rideable bike | 🟡 |
+| 3 | Riding physics (suspension, lean, wheelies, air, surfaces) | 🟡 First version built together with M2 — needs riding & tuning |
 | 4 | Crashes & damage | ⬜ |
-| 5 | Environment (neighbourhood, roads, trail) | ⬜ |
-| 6 | Traffic & police | ⬜ |
-| 7 | Vehicles & customisation | ⬜ |
+| 5 | Environment | 🟡 Started early at your request: garage lobby, town, lake, hills, forest |
+| 6 | Traffic & police | ⬜ (streets, intersections and traffic-light props are ready for it) |
+| 7 | Vehicles & customisation | ⬜ (Kestrel Sting already rideable for testing in Studio) |
 | 8 | Multiplayer validation & saving | ⬜ |
-| 9 | Polish & release prep | ⬜ |
+| 9 | Polish & release prep | 🟡 Started early: lobby menu, HUD, sound, lighting |
 
-## Milestone 1 — Project setup
+## Version 0.2.0 — what's in it
 
 ### Implemented
-- Rojo project (`default.project.json`) with shared / server / client folders.
-- Build pipeline (`tools/build.sh`): map generation → place build → lint → tests.
-- `build/RYDE.rbxl`, ready to open in Studio.
-- World settings: real-scale gravity (28.03), daytime lighting, streaming off.
-- Shared foundations: `Units`, `GameConfig`, `SurfaceConfig` (30 surfaces),
-  `VehicleSchema` validator, `VehicleCatalog` with 4 vehicle configs
-  (Voltra Storm prototype + 3 planned).
-- Server start-up checks (gravity, configs, map) reported in Output and to clients.
-- Client developer HUD: server status, FPS, speed (km/h / mph), surface + grip, position.
-- Generated test track (590 parts): 1 km oval, acceleration & braking markers,
-  skills pad, jump park (4 lanes), 7 surface strips, bumps & curbs lane,
-  hill, dirt trail, crash lane.
-- Beginner guide, architecture notes, test checklist.
+**Bike (Milestones 2–3)**
+- Two rideable electric dirt bikes generated from their configs: **Voltra Storm**
+  (starter) and **Kestrel Sting** (more powerful; free to test in Studio only).
+- Physics: one rigid body, raycast (sphere-cast) suspension front and rear,
+  tyre forces at the contact patches with a grip limit per surface (friction
+  circle), power-limited electric motor, aero drag, rolling resistance,
+  regenerative braking, speed-sensitive steering, rider weight shift.
+- Wheelies and stoppies emerge from the physics (no animation fakery).
+- Airborne: limited pitch control, weak roll, no auto-levelling.
+- Visuals: bike + rider lean into turns, steering, suspension travel,
+  spinning wheels, brake light, hands on grips / feet on pegs (R15).
+- Riding: ProximityPrompt to get on (owner only, checked by the server),
+  F to get off, R to reset upright; network ownership given to the rider.
+- Server: one bike per player, spawn slots in the garage, kickstand
+  parking, recovery if a bike falls out of the world, speed sanity check.
 
-### Tested successfully
-- Automated (Lune, outside Roblox): 51/51 tests pass; Selene lint clean.
-- Map layout reviewed via generated top-down and side-view plots.
+**Presentation**
+- Lobby: garage showroom with turntable, cinematic camera, menu
+  (Play / Garage / Settings / Controls), player chip, fade transitions.
+- HUD: arc speedometer, throttle & brake bars, surface, trick indicators
+  (wheelie/stoppie angle, airtime, slides), controls hint, toasts.
+- Settings: km/h–mph, chase camera, controls hint, dev overlay, 5 volume sliders.
+- Audio: motor whine, tyre roll (paved/loose), skids, wind, landings,
+  ambience, lobby music, UI sounds — through 4 sound groups.
+- World: Future lighting + atmosphere/bloom/colour grading, terrain grass
+  with grass blades, lake with beach and pier, rolling hills, mountain
+  border, free-ride dirt park, "Voltville" town (streets, kerbs, 12 shops,
+  parking, street lights, crossings, traffic-light props), 650 trees, plus
+  all Milestone 1 test zones.
 
-### Not yet tested
-- Anything inside Roblox Studio: that the place opens, scripts run, HUD
-  displays, signs render and read correctly, ground labels' orientation.
+### Tested successfully (automated, outside Roblox)
+- 107/107 Lune tests, Selene lint clean. Includes: handling design
+  checks from the real configs (top speed reached, 0–50 km/h time,
+  wheelie and stoppie thresholds, brakes don't endo), model structure,
+  sound config, built place contents.
+
+### Not yet tested (needs you in Studio)
+- Everything at runtime: whether riding feels good, camera, sounds
+  (the audio IDs were chosen by title — not listened to), terrain look,
+  menu layout on your screen, performance.
 
 ### Known limitations
-- No vehicles yet — the four vehicle configs are data only. The three
-  "Planned" ones have first-estimate numbers that will be tuned in Milestone 7.
-- The test map is flat-ground parts, no Terrain (Terrain arrives with the real map in Milestone 5).
-- Selene uses a minimal offline Roblox definition, so it doesn't check Roblox API member names.
-- No live sync yet: updates come as a new `RYDE.rbxl` download.
+- Bikes are built from Roblox parts, not sculpted meshes, so they look
+  "stylised" next to games with professional Blender models. The model
+  layout is documented so a mesh bike can replace it later.
+- No crashes/damage yet (Milestone 4): hitting a wall just stops you;
+  looping a wheelie flips the bike — press R.
+- No mobile touch controls yet (PC keyboard + gamepad only).
+- Settings aren't saved between sessions yet (Milestone 8).
+- Terrain is generated at server start — in Studio's edit mode the map
+  floats over a flat floor; press Play to see the real ground.
+- E-bike and scooter have configs but no models yet.
 
 ### Next recommended action
-Follow [GETTING_STARTED.md](GETTING_STARTED.md), run the checklist in
-[TESTING.md](TESTING.md), and report back. Then Milestone 2: the first rideable bike.
+Open the new `build/RYDE.rbxl`, ride, and report back using the checklist
+in [TESTING.md](TESTING.md). Feel is what matters now — tell me what feels
+too slow, twitchy, floaty, etc. and I'll tune the numbers.

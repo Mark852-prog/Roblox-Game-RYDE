@@ -30,6 +30,7 @@ export type VehicleConfig = {
 		wheelbaseM: number,
 		comHeightM: number, -- Centre of mass height with rider aboard
 		comFromRearM: number, -- Horizontal distance from rear axle to centre of mass
+		dragAreaM2: number, -- Drag coefficient x frontal area (bike + rider)
 	},
 
 	wheels: {
@@ -104,6 +105,7 @@ VehicleSchema.RANGES = {
 	["chassis.wheelbaseM"] = { 0.5, 2.0 },
 	["chassis.comHeightM"] = { 0.2, 1.5 },
 	["chassis.comFromRearM"] = { 0.1, 1.5 },
+	["chassis.dragAreaM2"] = { 0.1, 2 },
 	["wheels.frontRadiusM"] = { 0.05, 0.6 },
 	["wheels.rearRadiusM"] = { 0.05, 0.6 },
 	["motor.peakPowerW"] = { 100, 100_000 },

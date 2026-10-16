@@ -7,14 +7,18 @@
 
 local GameConfig = {}
 
-GameConfig.VERSION = "0.1.0"
-GameConfig.MILESTONE = "Milestone 1 - Project setup and test track"
+GameConfig.VERSION = "0.2.0"
+GameConfig.MILESTONE = "Milestone 2 - First rideable bike"
 
 -- Typical rider + riding gear. Vehicle handling adds this to the bike's own mass
 -- so a bike config only lists the bike itself.
 GameConfig.RIDER_MASS_KG = 75
 
--- Show the developer HUD (speed, surface, FPS). Toggle in game with F2.
-GameConfig.DEBUG_HUD_ENABLED = true
+-- Show the developer HUD (physics telemetry, FPS) at start. Toggle in game with F2.
+GameConfig.DEBUG_HUD_ENABLED = false
+
+-- In Roblox Studio only: let testers ride every vehicle that has a model,
+-- without buying it. Has no effect in a published game.
+GameConfig.DEV_UNLOCK_ALL_IN_STUDIO = true
 
 return GameConfig
