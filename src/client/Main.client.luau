@@ -9,6 +9,7 @@
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local GameConfig = require(Shared.Config.GameConfig)
@@ -22,9 +23,19 @@ local MainMenu = require(script.Parent.UI.MainMenu)
 
 print(`[RYDE] Client starting - version {GameConfig.VERSION}`)
 
+local isLab = Workspace:GetAttribute("RYDE_Lab") == true
+
 AudioController.start() -- sound groups first: other systems create sounds in them
 BikeVisuals.start()
 RideController.start()
-Hud.start(RideController, MainMenu.reopen)
-DebugHud.start(GameConfig.DEBUG_HUD_ENABLED, RideController)
-MainMenu.start(RideController)
+if isLab then
+	-- PhysicsLab test place: no lobby; the lab panel drives scripted tests.
+	local LabController = require(script.Parent.Lab.LabController)
+	Hud.start(RideController, function() end)
+	DebugHud.start(true, RideController)
+	LabController.start(RideController)
+else
+	Hud.start(RideController, MainMenu.reopen)
+	DebugHud.start(GameConfig.DEBUG_HUD_ENABLED, RideController)
+	MainMenu.start(RideController)
+end

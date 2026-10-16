@@ -1,0 +1,117 @@
+{
+  "name": "RYDE-PhysicsLab",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Shared": {
+        "$path": "src/shared"
+      },
+      "Assets": {
+        "$className": "Folder",
+        "Vehicles": {
+          "$path": "assets/Vehicles.rbxm"
+        }
+      }
+    },
+    "ServerScriptService": {
+      "Server": {
+        "$path": "src/server"
+      }
+    },
+    "StarterPlayer": {
+      "$properties": {
+        "CharacterUseJumpPower": false,
+        "CharacterJumpHeight": 4.0,
+        "CharacterWalkSpeed": 16.0,
+        "EnableMouseLockOption": false
+      },
+      "StarterPlayerScripts": {
+        "Client": {
+          "$path": "src/client"
+        }
+      }
+    },
+    "Workspace": {
+      "$properties": {
+        "Gravity": 35,
+        "StreamingEnabled": false
+      },
+      "PhysicsLab": {
+        "$path": "assets/PhysicsLab.rbxm"
+      },
+      "$attributes": {
+        "RYDE_Lab": true
+      }
+    },
+    "Lighting": {
+      "$properties": {
+        "Technology": "Future",
+        "ClockTime": 15.2,
+        "GeographicLatitude": 35,
+        "Brightness": 3,
+        "ExposureCompensation": 0.1,
+        "GlobalShadows": true,
+        "ShadowSoftness": 0.25,
+        "Ambient": [
+          0.27,
+          0.28,
+          0.3
+        ],
+        "OutdoorAmbient": [
+          0.5,
+          0.52,
+          0.55
+        ],
+        "EnvironmentDiffuseScale": 1,
+        "EnvironmentSpecularScale": 1
+      },
+      "Atmosphere": {
+        "$className": "Atmosphere",
+        "$properties": {
+          "Density": 0.28,
+          "Offset": 0.15,
+          "Color": [
+            0.78,
+            0.83,
+            0.9
+          ],
+          "Decay": [
+            0.45,
+            0.5,
+            0.6
+          ],
+          "Glare": 0.25,
+          "Haze": 1.2
+        }
+      },
+      "Bloom": {
+        "$className": "BloomEffect",
+        "$properties": {
+          "Intensity": 0.5,
+          "Size": 28,
+          "Threshold": 1.6
+        }
+      },
+      "ColorCorrection": {
+        "$className": "ColorCorrectionEffect",
+        "$properties": {
+          "Brightness": 0.02,
+          "Contrast": 0.1,
+          "Saturation": 0.12,
+          "TintColor": [
+            1,
+            0.99,
+            0.97
+          ]
+        }
+      },
+      "SunRays": {
+        "$className": "SunRaysEffect",
+        "$properties": {
+          "Intensity": 0.04,
+          "Spread": 0.7
+        }
+      }
+    }
+  }
+}

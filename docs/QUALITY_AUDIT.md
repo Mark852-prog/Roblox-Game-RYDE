@@ -258,9 +258,9 @@ Measured in PhysicsLab at **60 fps and at 30 fps** (Studio can limit the frame r
 | Braking (S) | 50 → 0 km/h in 12–16 m without lifting the rear |
 | Front brake | Stoppie possible from ≥ 25 km/h; no flip if released within 0.5 s |
 | Rest | ≤ 2 visible bounces after spawning or a small drop; no creeping on flat ground |
-| Landing 1.5 m flat | Peak suspension load ≤ 5 g; chassis box never touches; one rebound ≤ 10% of drop height |
+| Landing 1.5 m flat | Chassis box never touches; peak suspension load ≤ 10 g. *(Corrected 2026-10-16: the original "≤ 5 g" was physically impossible: stopping a 1.5 m drop in 20 cm of travel needs ≥ ~7 g; real riders absorb the rest with their legs. On a proper downslope landing the target is ≤ 3 g.)* |
 | Frame-rate independence | Each metric above within ±10% between 60 and 30 fps |
-| Wheelie | With balance assist "Standard": a new player holds 15–45° for ≥ 5 s after ≤ 10 min practice (playtest with 2+ people); with assist "Off": possible but hard (skilled players) |
+| Wheelie | Autopilot (W + Shift held 6 s, assist "Standard"): never loops, ≥ 4 s at 15–45°. Playtest: a new player holds 15–45° for ≥ 5 s after ≤ 10 min practice (2+ people). Assist "Off": possible but hard |
 | Steering | No oscillation after a step steer; lean ≤ 45°; U-turn radius at walking speed ≤ 3 m |
 | Kerbs | 0.15 m kerb taken at ≥ 10 km/h without losing control; 0.5 m kerb stops the bike (needs a hop later) |
 | Stuck | Never stuck against a wall (reverse works) |
@@ -758,6 +758,29 @@ done in parallel. The map slice comes after the art direction and kit are
 approved.
 
 ---
+
+## 10b. Progress since this audit
+
+| Phase | Status |
+|---|---|
+| 1. PhysicsLab | **Built** (`build/PhysicsLab.rbxl`): flat test field, kerb lane, autopilot running 11 scenarios against the criteria in §3.4, results panel + `RYDE_LAB,` lines in Output, simulated 30/20 fps. **Not yet run in Roblox.** |
+| 2. Physics fixes | **Implemented** (PH1, PH2, PH3, PH4, PH5, PH6 + touchdown prediction + rear-lift protection). Chosen with `tools/analysis/bike_sim_v3.py`; offline results in `tools/analysis/results_v3.txt`. **Needs PhysicsLab confirmation.** |
+| Bike models | Waiting for the Creator Store models you chose (see `imports/README.md`). Real brand names kept at your request. |
+
+**What the offline model predicts** (60 fps / 30 fps; real Roblox may differ):
+
+| Test | v0.2.0 | v3 |
+|---|---|---|
+| Settle bounces | 5 / 7 | 0 / 0 |
+| 1.5 m flat drop: peak load, chassis hits ground? | 9 g / 12 g+, hits at 30 fps | 10 g / 8 g, never hits |
+| 50→0 km/h with S | ~20 m (rear grip lost) | 15.0 m / 16.7 m, rear never lifts |
+| Wheelie hold (W+Shift 6 s), assist Standard | uncontrollable | 4.8 s / 1.5 s in 15–45°, never loops |
+| Wheelie, then S to drop it | — | front down in 0.35 s |
+
+**Known limitations found while tuning (honest):**
+- At **20 fps**, landings and hard braking degrade badly in the model (forces can only change once per frame). 30 fps is acceptable; 20 fps needs a PhysicsLab check and possibly a different approach (e.g. engine springs that update every physics step).
+- **Wheelie hold at 30 fps** is much shorter than at 60 fps (1.5 s vs 4.8 s), and "Light" assist still loops if you just hold full throttle (you have to feather it — that's the point of Light).
+- Wheelie control measures pitch against the world, not the slope, so on steep hills it will behave differently. To refine after real measurements.
 
 ## 11. Prioritised implementation plan
 

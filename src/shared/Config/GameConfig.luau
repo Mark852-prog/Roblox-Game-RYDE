@@ -7,8 +7,8 @@
 
 local GameConfig = {}
 
-GameConfig.VERSION = "0.2.0"
-GameConfig.MILESTONE = "Milestone 2 - First rideable bike"
+GameConfig.VERSION = "0.3.0-dev"
+GameConfig.MILESTONE = "Quality overhaul - physics v3 + PhysicsLab"
 
 -- Typical rider + riding gear. Vehicle handling adds this to the bike's own mass
 -- so a bike config only lists the bike itself.

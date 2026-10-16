@@ -26,6 +26,25 @@ with Selene and runs the Lune test suite (107 tests). They cover:
 **What they can't cover:** the real Roblox engine — physics behaviour,
 rendering, sound playback, input, networking. Those need the checks below.
 
+## PhysicsLab (measured physics tests in Roblox)
+
+`build/PhysicsLab.rbxl` is a separate, small test place that uses exactly the
+same game code. It measures the bike against the targets in
+[QUALITY_AUDIT.md §3.4](QUALITY_AUDIT.md#34-physics-acceptance-criteria).
+
+1. Download `build/PhysicsLab.rbxl` (same way as `RYDE.rbxl`) and open it in Studio.
+2. Press **Play**. You spawn and are put on a Voltra Storm automatically.
+3. In the **PHYSICS LAB** panel (right side) press **RUN ALL**. The bike drives
+   itself through 11 tests (about 90 seconds). Don't touch the keys meanwhile.
+4. Results appear in the panel (green PASS, red FAIL, grey INFO).
+5. In the **Output** window, select the lines starting with `RYDE_LAB,`
+   (Ctrl+A selects everything — that's fine too), copy, and paste them to me.
+
+Optional extra runs (each is useful):
+- Set **SIM FPS → 30**, press RUN ALL again (tests a slower device).
+- Set **ASSIST → Off**, run `wheelieHold` (shows raw physics).
+- Press **KestrelSting**, wait for the new bike, RUN ALL.
+
 ## Milestone 2 checklist (in Roblox Studio)
 
 Open the new `build/RYDE.rbxl`, then **Home → Play**. Tick what works,
@@ -77,3 +96,5 @@ and for anything that doesn't, tell me what happened.
 | 2026-10-16 | 0.1.0 | You (Studio) | Place opens, `Server: OK`, HUD and map visible ✅ |
 | 2026-10-16 | 0.2.0 | Claude (automated) | 107/107 tests passed, Selene clean |
 | — | 0.2.0 | You (Studio) | *Not yet tested* |
+| 2026-10-16 | 0.3.0-dev | Claude (automated) | 115/115 tests passed; physics v3 chosen with the offline model (`tools/analysis/results_v3.txt`) |
+| — | 0.3.0-dev | You (PhysicsLab) | *Not yet run* |

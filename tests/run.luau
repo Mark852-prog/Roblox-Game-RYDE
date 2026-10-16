@@ -20,6 +20,7 @@ local results = TestRunner.run({
 	["6 VehicleModels"] = require("./specs/VehicleModels.spec"),
 	["7 SoundConfig"] = require("./specs/SoundConfig.spec"),
 	["8 PlaceFile"] = require("./specs/PlaceFile.spec"),
+	["9 LabPlace"] = require("./specs/LabPlace.spec"),
 })
 
 print(`\n{results.passed} passed, {results.failed} failed`)

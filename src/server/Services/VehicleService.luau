@@ -387,14 +387,7 @@ local function onAction(player: Player, action: unknown, payload: unknown)
 			notify(player, "That vehicle isn't available yet.")
 			return
 		end
-		local humanoid = getHumanoid(player)
-		if not humanoid then
-			return
-		end
-		local record = spawnBike(player, payload)
-		if record then
-			mount(record, player)
-		end
+		VehicleService.spawnAndMount(player, payload)
 	elseif action == "Dismount" then
 		dismount(player)
 	end
@@ -439,6 +432,17 @@ local function monitor(dt: number)
 			end
 		end
 	end
+end
+
+-- Spawn (or replace) the player's bike and seat them on it. The vehicle id
+-- must already have been validated (canUse) by the caller.
+function VehicleService.spawnAndMount(player: Player, vehicleId: string): boolean
+	local humanoid = getHumanoid(player)
+	if not humanoid then
+		return false
+	end
+	local record = spawnBike(player, vehicleId)
+	return record ~= nil and mount(record, player)
 end
 
 function VehicleService.start()
