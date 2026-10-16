@@ -116,6 +116,11 @@
           "Spread": 0.7
         }
       }
+    },
+    "AssetService": {
+      "$properties": {
+        "AllowInsertFreeAssets": true
+      }
     }
   }
 }

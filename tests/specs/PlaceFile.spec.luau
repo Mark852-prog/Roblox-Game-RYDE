@@ -56,6 +56,19 @@ return function(t)
 		t.it("streaming is off for the small test map", function()
 			expect(workspace.StreamingEnabled).toBe(false)
 		end)
+		t.it("allows loading the chosen Creator Store bikes and effects", function()
+			expect(game:GetService("AssetService").AllowInsertFreeAssets).toBe(true)
+		end)
+		t.it("every imported style and effect has a numeric asset id", function()
+			local ImportedAssets = require("../../src/shared/Config/ImportedAssets")
+			expect(#ImportedAssets.BikeStyles > 0).toBe(true)
+			for _, style in ImportedAssets.BikeStyles do
+				assert(typeof(style.assetId) == "number" and style.assetId > 0, `bad id for {style.key}`)
+			end
+			for vehicleId, key in ImportedAssets.DefaultStyle do
+				assert(ImportedAssets.getStyle(key), `default style {key} for {vehicleId} missing`)
+			end
+		end)
 	end)
 
 	t.describe("lighting", function()

@@ -34,6 +34,7 @@ local VehicleMath = require(Shared.Vehicle.VehicleMath)
 local WheelProbe = require(Shared.Vehicle.WheelProbe)
 
 local BikePhysics = require(Shared.Vehicle.BikePhysics)
+local VehicleEffects = require(script.Parent.VehicleEffects)
 
 local VEHICLE_TAG = "RYDEVehicle"
 local UPDATE_DISTANCE = 450
@@ -70,6 +71,7 @@ type Entry = {
 	sounds: { [string]: Sound },
 	ik: { Instance },
 	ikRiderId: number?,
+	effects: VehicleEffects.VehicleEffects,
 }
 
 local entries: { [Model]: Entry } = {}
@@ -167,6 +169,7 @@ local function addEntry(model: Model)
 		sounds = {},
 		ik = {},
 		ikRiderId = nil,
+		effects = VehicleEffects.new(chassis, VehicleMath.derive(config, Workspace.Gravity), excludeList(model)),
 	}
 	if promptAttachment then
 		local prompt = promptAttachment:FindFirstChildOfClass("ProximityPrompt")
@@ -196,6 +199,7 @@ local function removeEntry(model: Model)
 	for _, s in entry.sounds do
 		s:Destroy()
 	end
+	entry.effects:destroy()
 	entries[model] = nil
 end
 
@@ -315,6 +319,15 @@ local function update(entry: Entry, dt: number, cameraPos: Vector3)
 	end
 	s.grounded = grounded
 	s.lastVy = velocity.Y
+	if distance < PROBE_DISTANCE then
+		entry.effects:update(dt, {
+			speed = speed,
+			slip = slip,
+			grounded = grounded,
+			surfaceEffect = surfaceEffect,
+			parked = parked,
+		})
+	end
 
 	-- Lean & steer targets
 	local leanTarget = 0

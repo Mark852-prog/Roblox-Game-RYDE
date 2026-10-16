@@ -5,8 +5,8 @@ local VehicleSchema = require(script.Parent.Parent.Parent.Vehicle.VehicleSchema)
 
 local config: VehicleSchema.VehicleConfig = {
 	id = "KestrelSting",
-	displayName = "Kestrel Sting",
-	manufacturer = "Kestrel",
+	displayName = "Sting R",
+	manufacturer = "Talaria",
 	category = "ElectricDirtBike",
 	status = "Prototype",
 	price = 12000,

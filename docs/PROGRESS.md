@@ -77,3 +77,19 @@ Status key: ✅ done & verified in Roblox · 🟡 implemented & auto-tested, wai
 Open the new `build/RYDE.rbxl`, ride, and report back using the checklist
 in [TESTING.md](TESTING.md). Feel is what matters now — tell me what feels
 too slow, twitchy, floaty, etc. and I'll tune the numbers.
+
+## 2026-10-16 — Real bikes from the Creator Store + effects
+
+- **Implemented:** the server loads the user's chosen Creator Store bikes
+  (Sur-Ron Light Bee Gear / Light Bee X / Truly / detailed, KTC Racing,
+  Yamaha YZ450F) at start-up, strips their scripts/physics/sounds and fits
+  them onto our physics bike (`AssetImportService`). Garage has a **STYLE**
+  picker. Real names kept (Sur-Ron Light Bee X, Talaria Sting R).
+  Dust / pebbles / tyre smoke / sparks particles (`VehicleEffects`), using
+  the chosen Creator Store effects when they load, built-in ones otherwise.
+- **Tested (offline):** 120/120 tests, Selene clean, place file allows
+  third-party asset loading.
+- **Not tested:** whether Roblox actually loads those assets in Studio,
+  and how well the automatic fitting (scale/orientation/wheels) looks.
+  Output prints `[RYDE] Import ...` lines describing each fit.
+- **Fallback:** if a style fails to load, the old built-in bike is used.

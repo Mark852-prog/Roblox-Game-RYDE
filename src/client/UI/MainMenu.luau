@@ -25,6 +25,7 @@ local GameConfig = require(Shared.Config.GameConfig)
 local Remotes = require(Shared.Net.Remotes)
 local VehicleCatalog = require(Shared.Config.VehicleCatalog)
 local VehicleMath = require(Shared.Vehicle.VehicleMath)
+local ImportedAssets = require(Shared.Config.ImportedAssets)
 
 local Settings = require(script.Parent.Parent.Settings)
 local AudioController = require(script.Parent.Parent.Audio.AudioController)
@@ -43,6 +44,8 @@ local panels: { [string]: Frame } = {}
 local navButtons: { [string]: TextButton } = {}
 local activePanel: string? = nil
 local selectedVehicle = "VoltraStorm"
+local selectedStyle: { [string]: string } = table.clone(ImportedAssets.DefaultStyle) -- vehicle id -> style key
+local styleLabel: TextLabel? = nil
 local showroomModel: Model? = nil
 local turntableAngle = 0
 local cameraConnection: RBXScriptConnection? = nil
@@ -114,7 +117,13 @@ local function showBike(id: string)
 		showroomModel = nil
 	end
 	local assets = ReplicatedStorage:FindFirstChild("Assets")
-	local template = assets and assets:FindFirstChild("Vehicles") and assets.Vehicles:FindFirstChild(id)
+	-- Imported Creator Store style if it has loaded, else the built-in model.
+	local styles = assets and assets:FindFirstChild("Styles")
+	local styleSet = styles and styles:FindFirstChild(id)
+	local template = styleSet and selectedStyle[id] and styleSet:FindFirstChild(selectedStyle[id])
+	if not template then
+		template = assets and assets:FindFirstChild("Vehicles") and assets.Vehicles:FindFirstChild(id)
+	end
 	local turntable = showroom()
 	local config = VehicleCatalog.get(id)
 	if not template or not turntable or not config then
@@ -354,8 +363,106 @@ local function buildInfoCard()
 	refreshInfoCard()
 end
 
+-- Styles (Creator Store bikes) that loaded for a vehicle, in config order.
+local function availableStyles(id: string): { ImportedAssets.Style }
+	local list = {}
+	local assets = ReplicatedStorage:FindFirstChild("Assets")
+	local styles = assets and assets:FindFirstChild("Styles")
+	local set = styles and styles:FindFirstChild(id)
+	if set then
+		for _, style in ImportedAssets.BikeStyles do
+			if set:FindFirstChild(style.key) then
+				table.insert(list, style)
+			end
+		end
+	end
+	return list
+end
+
+local function refreshStyleLabel()
+	if not styleLabel then
+		return
+	end
+	local list = availableStyles(selectedVehicle)
+	if #list == 0 then
+		styleLabel.Text = "Built-in model (styles loading...)"
+		return
+	end
+	local current = ImportedAssets.getStyle(selectedStyle[selectedVehicle] or "")
+	local found = false
+	for _, style in list do
+		if current and style.key == current.key then
+			found = true
+		end
+	end
+	if not found then
+		selectedStyle[selectedVehicle] = list[1].key
+		current = list[1]
+	end
+	styleLabel.Text = if current then current.name else list[1].name
+end
+
+local function cycleStyle(direction: number)
+	local list = availableStyles(selectedVehicle)
+	if #list == 0 then
+		return
+	end
+	local index = 1
+	for i, style in list do
+		if style.key == selectedStyle[selectedVehicle] then
+			index = i
+		end
+	end
+	index = (index - 1 + direction) % #list + 1
+	selectedStyle[selectedVehicle] = list[index].key
+	refreshStyleLabel()
+	showBike(selectedVehicle)
+end
+
 local function buildGaragePanel()
 	local body = contentPanel("GARAGE", "GARAGE")
+	-- Style picker: which Creator Store bike model to show/ride.
+	local styleRow = Theme.new("Frame", { Size = UDim2.new(1, -8, 0, 44), BackgroundColor3 = C.panelLight, BorderSizePixel = 0, LayoutOrder = 0, Parent = body }, { Theme.corner(4) })
+	Theme.label("STYLE", F.bodyBold, 11, { Position = UDim2.fromOffset(12, 0), Size = UDim2.fromOffset(50, 44), TextColor3 = C.textDim, Parent = styleRow })
+	styleLabel = Theme.label("", F.bodyBold, 14, {
+		Position = UDim2.fromOffset(62, 0),
+		Size = UDim2.new(1, -150, 1, 0),
+		TextTruncate = Enum.TextTruncate.AtEnd,
+		Parent = styleRow,
+	})
+	for i, arrow in { "<", ">" } do
+		local b = Theme.new("TextButton", {
+			AnchorPoint = Vector2.new(1, 0.5),
+			Position = UDim2.new(1, if i == 1 then -46 else -8, 0.5, 0),
+			Size = UDim2.fromOffset(34, 30),
+			BackgroundColor3 = C.panel,
+			BorderSizePixel = 0,
+			FontFace = F.bodyBold,
+			TextSize = 16,
+			TextColor3 = C.text,
+			Text = arrow,
+			Parent = styleRow,
+		}, { Theme.corner(4) })
+		Theme.bindButton(b, function()
+			cycleStyle(if i == 1 then -1 else 1)
+		end)
+	end
+	refreshStyleLabel()
+	task.spawn(function()
+		-- Styles load on the server in the background; update when they arrive.
+		local assets = ReplicatedStorage:WaitForChild("Assets")
+		local styles = assets:WaitForChild("Styles", 60)
+		if styles then
+			styles.DescendantAdded:Connect(function()
+				refreshStyleLabel()
+			end)
+			task.wait(1)
+			refreshStyleLabel()
+			if Settings.menuOpen then
+				showBike(selectedVehicle)
+			end
+		end
+	end)
 	local cards = {}
 	local function refresh()
 		for id, card in cards do
@@ -414,6 +521,7 @@ local function buildGaragePanel()
 				return
 			end
 			selectedVehicle = config.id
+			refreshStyleLabel()
 			refresh()
 			refreshInfoCard()
 			showBike(config.id)
@@ -582,8 +690,9 @@ local function play()
 
 	local session = rides.getSession()
 	local currentId = session and session.model:GetAttribute("VehicleId")
-	if currentId ~= selectedVehicle then
-		Remotes.get("VehicleAction"):FireServer("Spawn", selectedVehicle)
+	local currentStyle = session and session.model:GetAttribute("StyleKey")
+	if currentId ~= selectedVehicle or currentStyle ~= selectedStyle[selectedVehicle] then
+		Remotes.get("VehicleAction"):FireServer("Spawn", selectedVehicle, selectedStyle[selectedVehicle])
 	end
 	task.wait(0.15)
 	gui.Enabled = true

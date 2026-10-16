@@ -7,7 +7,7 @@
 	server (see VehicleService) - never trust the client.
 
 	VehicleAction (client -> server)
-	    ("Spawn", vehicleId: string)   spawn/replace your bike and get on it
+	    ("Spawn", vehicleId: string, styleKey: string?)   spawn/replace your bike (optional visual style) and get on it
 	    ("Dismount")                   get off your bike
 	VehicleNotice (server -> client)
 	    (message: string)              short message to show the player

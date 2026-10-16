@@ -7,7 +7,7 @@
 ```
 
 Regenerates the world and bike models, builds `build/RYDE.rbxl`, lints
-with Selene and runs the Lune test suite (107 tests). They cover:
+with Selene and runs the Lune test suite (120 tests). They cover:
 
 - Every `.luau` file in `src/` compiles.
 - Units and gravity (and that the project file matches).
@@ -98,3 +98,5 @@ and for anything that doesn't, tell me what happened.
 | — | 0.2.0 | You (Studio) | *Not yet tested* |
 | 2026-10-16 | 0.3.0-dev | Claude (automated) | 115/115 tests passed; physics v3 chosen with the offline model (`tools/analysis/results_v3.txt`) |
 | — | 0.3.0-dev | You (PhysicsLab) | *Not yet run* |
+| 2026-10-16 | 0.3.0-dev | Claude (automated) | 120/120 tests passed; Creator Store bike styles + dust/sparks added (runtime loading not verifiable offline) |
+| — | 0.3.0-dev | You (Studio) | *Not yet tested: do the imported bikes appear?* |

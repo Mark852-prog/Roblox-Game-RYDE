@@ -16,6 +16,7 @@ local GameConfig = require(Shared.Config.GameConfig)
 local Units = require(Shared.Util.Units)
 local VehicleCatalog = require(Shared.Config.VehicleCatalog)
 
+local AssetImportService = require(script.Parent.Services.AssetImportService)
 local VehicleService = require(script.Parent.Services.VehicleService)
 local WorldService = require(script.Parent.Services.WorldService)
 
@@ -68,6 +69,7 @@ if not isLab then
 		warn(`{PREFIX} WorldService failed: {err}`)
 	end
 end
+AssetImportService.start() -- loads the Creator Store bikes/effects in the background
 VehicleService.start()
 
 if isLab then

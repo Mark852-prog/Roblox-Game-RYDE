@@ -31,6 +31,9 @@ local GameConfig = require(Shared.Config.GameConfig)
 local Remotes = require(Shared.Net.Remotes)
 local VehicleCatalog = require(Shared.Config.VehicleCatalog)
 local VehicleMath = require(Shared.Vehicle.VehicleMath)
+local ImportedAssets = require(Shared.Config.ImportedAssets)
+
+local AssetImportService = require(script.Parent.AssetImportService)
 
 local VEHICLE_TAG = "RYDEVehicle"
 local RIDER_GROUP = "RYDERiders"
@@ -305,9 +308,14 @@ local function findSpawnCFrame(player: Player): CFrame
 	return CFrame.new(0, 5, 0)
 end
 
-local function spawnBike(player: Player, vehicleId: string): BikeRecord?
+local function spawnBike(player: Player, vehicleId: string, styleKey: string?): BikeRecord?
 	local assets = ReplicatedStorage:FindFirstChild("Assets")
-	local template = assets and assets:FindFirstChild("Vehicles") and assets.Vehicles:FindFirstChild(vehicleId)
+	-- Imported Creator Store style if available, else the built-in model.
+	local template: Instance? = AssetImportService.getStyledTemplate(vehicleId, styleKey)
+	local usedStyle = if template then template.Name else nil
+	if not template then
+		template = assets and assets:FindFirstChild("Vehicles") and assets.Vehicles:FindFirstChild(vehicleId)
+	end
 	local config = VehicleCatalog.get(vehicleId)
 	if not template or not config then
 		warn(`[RYDE] No model for vehicle {vehicleId}`)
@@ -337,6 +345,7 @@ local function spawnBike(player: Player, vehicleId: string): BikeRecord?
 	prompt.Parent = promptAttachment
 
 	model:SetAttribute("VehicleId", vehicleId)
+	model:SetAttribute("StyleKey", usedStyle)
 	model:SetAttribute("OwnerUserId", player.UserId)
 	CollectionService:AddTag(model, VEHICLE_TAG)
 
@@ -372,7 +381,7 @@ local function spawnBike(player: Player, vehicleId: string): BikeRecord?
 	return record
 end
 
-local function onAction(player: Player, action: unknown, payload: unknown)
+local function onAction(player: Player, action: unknown, payload: unknown, styleKey: unknown)
 	local now = os.clock()
 	if lastAction[player] and now - lastAction[player] < ACTION_COOLDOWN then
 		return
@@ -387,7 +396,8 @@ local function onAction(player: Player, action: unknown, payload: unknown)
 			notify(player, "That vehicle isn't available yet.")
 			return
 		end
-		VehicleService.spawnAndMount(player, payload)
+		local style = if type(styleKey) == "string" and ImportedAssets.getStyle(styleKey) then styleKey else nil
+		VehicleService.spawnAndMount(player, payload, style)
 	elseif action == "Dismount" then
 		dismount(player)
 	end
@@ -436,12 +446,12 @@ end
 
 -- Spawn (or replace) the player's bike and seat them on it. The vehicle id
 -- must already have been validated (canUse) by the caller.
-function VehicleService.spawnAndMount(player: Player, vehicleId: string): boolean
+function VehicleService.spawnAndMount(player: Player, vehicleId: string, styleKey: string?): boolean
 	local humanoid = getHumanoid(player)
 	if not humanoid then
 		return false
 	end
-	local record = spawnBike(player, vehicleId)
+	local record = spawnBike(player, vehicleId, styleKey)
 	return record ~= nil and mount(record, player)
 end
 
