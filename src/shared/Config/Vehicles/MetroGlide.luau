@@ -31,8 +31,8 @@ local config: VehicleSchema.VehicleConfig = {
 		maxLeanDeg = 40,
 	},
 	suspension = {
-		front = { travelM = 0.08, frequencyHz = 2.8, dampingRatio = 0.6 },
-		rear = { travelM = 0.02, frequencyHz = 4.5, dampingRatio = 0.8 },
+		front = { travelM = 0.08, frequencyHz = 2.8, dampingRatio = 0.78 },
+		rear = { travelM = 0.02, frequencyHz = 4.5, dampingRatio = 1.0 },
 	},
 	tires = { longitudinalGrip = 0.9, lateralGrip = 0.9 },
 	wheelie = { riderShiftM = 0.2, maxPitchDeg = 70 },

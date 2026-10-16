@@ -1,0 +1,38 @@
+BikePhysics v3 (planned) - offline model, NOT a Roblox playtest
+params: {'damping_scale': 1.3, 'progressive_start': 0.6, 'progressive_gain': 3.0, 'bumpstop_k': 6.0, 'damper_knee': 4.0, 'damper_high_ratio': 0.35, 'normal_front_share': 0.6, 'rlp_load': 0.08, 'hbc_start': 0.75, 'hbc_gain': 0.0, 'predict': 1.0, 'predict_min_rate': inf}
+
+Settle (dropped 0.5 studs = 14 cm)           target: <= 2 bounces
+  60 fps: bounces 0, peak load 2.30 g
+  30 fps: bounces 0, peak load 2.27 g
+  20 fps: bounces 0, peak load 2.32 g
+
+Drop 1.5 m onto flat                         target: box never touches; <= 10 g (>= ~7 g unavoidable with 20 cm travel)
+  60 fps: peak load 10.15 g, min box clearance 0.69 studs
+  30 fps: peak load 8.19 g, min box clearance 0.75 studs
+  20 fps: peak load 22.11 g, min box clearance -0.03 studs
+
+Acceleration 0-50 km/h and braking 50-0 (S)  target: 3.0-4.0 s; 12-16 m, rear stays down
+  60 fps: 0-50 2.98 s | stop distance 15.0 m, min pitch -4.4 deg, rear wheel off the ground 0.00 s
+  30 fps: 0-50 2.97 s | stop distance 16.7 m, min pitch -5.0 deg, rear wheel off the ground 0.00 s
+
+Wheelie hold: player holds W + Shift for 6 s from 15 km/h    target (Standard): never loops; >= 5 s in 15-45 deg at 60 fps
+  Off      60 fps: time in 15-45 deg 0.3 s, max pitch  194.2, looped True, end speed 24 km/h
+  Off      30 fps: time in 15-45 deg 0.4 s, max pitch  241.1, looped True, end speed 25 km/h
+  Light    60 fps: time in 15-45 deg 1.2 s, max pitch  193.9, looped True, end speed 24 km/h
+  Light    30 fps: time in 15-45 deg 1.1 s, max pitch  257.1, looped True, end speed 26 km/h
+  Standard 60 fps: time in 15-45 deg 4.8 s, max pitch   31.3, looped False, end speed 45 km/h
+  Standard 30 fps: time in 15-45 deg 1.5 s, max pitch   26.4, looped False, end speed 65 km/h
+
+Wheelie robustness (Standard): entry speed / pulsed throttle (W tapped 0.3 s on, 0.15 s off)
+   5 km/h held  : time in 15-45 deg 5.5 s, max 35.0, looped False
+   5 km/h pulsed: time in 15-45 deg 0.0 s, max 7.6, looped False
+  15 km/h held  : time in 15-45 deg 4.8 s, max 31.3, looped False
+  15 km/h pulsed: time in 15-45 deg 0.0 s, max 7.4, looped False
+  25 km/h held  : time in 15-45 deg 0.6 s, max 18.7, looped False
+  25 km/h pulsed: time in 15-45 deg 0.0 s, max 5.9, looped False
+
+Wheelie tap: W + Shift 0.4 s then release (Standard)
+  peak 11.9 deg, end -0.1 deg
+
+Wheelie dropped with rear brake: hold to 3 s, then S
+  pitch at 3 s 29.1 deg, front down after 0.35 s, landing load 2.91 g

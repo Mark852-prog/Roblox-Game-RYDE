@@ -33,7 +33,7 @@ local VehicleCatalog = require(Shared.Config.VehicleCatalog)
 local VehicleMath = require(Shared.Vehicle.VehicleMath)
 local WheelProbe = require(Shared.Vehicle.WheelProbe)
 
-local BikePhysics = require(script.Parent.BikePhysics)
+local BikePhysics = require(Shared.Vehicle.BikePhysics)
 
 local VEHICLE_TAG = "RYDEVehicle"
 local UPDATE_DISTANCE = 450

@@ -29,10 +29,11 @@ local VehicleMath = {}
 
 local AIR_DENSITY = 1.225 -- kg/m^3
 
--- Share of the front brake used by the normal brake input. Kept low so a
--- normal hard stop does not throw the bike over the bars; the separate
--- front-brake input uses 100% and is how you do a stoppie.
-VehicleMath.NORMAL_BRAKE_FRONT_SHARE = 0.25
+-- Share of the front brake used by the normal brake input. High enough for
+-- realistic stopping distances (the rear tyre loses grip as weight moves
+-- forward), low enough that a normal hard stop doesn't flip the bike; the
+-- separate front-brake input uses 100% and is how you do a stoppie.
+VehicleMath.NORMAL_BRAKE_FRONT_SHARE = 0.6
 
 -- Lateral grip usable for steering assistance (fraction of mu * g).
 VehicleMath.STEER_GRIP_FRACTION = 0.85
@@ -168,9 +169,10 @@ function VehicleMath.dragAccel(spec: Spec, speed: number): number
 end
 
 -- Brake decelerations (studs/s^2) for the normal brake (0..1) and the front-brake input (0..1).
-function VehicleMath.brakeAccels(spec: Spec, brake: number, frontBrake: number): (number, number)
+-- `normalFrontScale` (default 1) lets rear-lift protection ease the normal brake's front share.
+function VehicleMath.brakeAccels(spec: Spec, brake: number, frontBrake: number, normalFrontScale: number?): (number, number)
 	local brakes = spec.config.brakes
-	local frontShare = math.max(brake * VehicleMath.NORMAL_BRAKE_FRONT_SHARE, frontBrake)
+	local frontShare = math.max(brake * VehicleMath.NORMAL_BRAKE_FRONT_SHARE * (normalFrontScale or 1), frontBrake)
 	return VehicleMath.forceToAccel(spec, brakes.frontMaxForceN * frontShare),
 		VehicleMath.forceToAccel(spec, brakes.rearMaxForceN * brake)
 end

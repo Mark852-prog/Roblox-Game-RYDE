@@ -11,6 +11,7 @@ local Settings = {}
 Settings.values = {
 	units = "kmh", -- "kmh" | "mph"
 	chaseCamera = true,
+	wheelieAssist = "Standard", -- "Off" | "Light" | "Standard"
 	showControls = true,
 	debugHud = false,
 	volumeMaster = 1,

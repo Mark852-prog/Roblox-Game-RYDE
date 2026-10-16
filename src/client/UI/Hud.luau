@@ -65,7 +65,7 @@ end
 local function controlsHint(parent: Instance): Frame
 	local rows = {
 		{ { "W" }, "Throttle" },
-		{ { "S" }, "Brake" },
+		{ { "S" }, "Brake / hold: reverse" },
 		{ { "A", "D" }, "Steer" },
 		{ { "Space" }, "Front brake" },
 		{ { "Shift" }, "Lean back / wheelie" },

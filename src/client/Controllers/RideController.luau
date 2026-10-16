@@ -26,7 +26,7 @@ local VehicleCatalog = require(Shared.Config.VehicleCatalog)
 local VehicleMath = require(Shared.Vehicle.VehicleMath)
 
 local Settings = require(script.Parent.Parent.Settings)
-local BikePhysics = require(script.Parent.Parent.Vehicle.BikePhysics)
+local BikePhysics = require(Shared.Vehicle.BikePhysics)
 local BikeVisuals = require(script.Parent.Parent.Vehicle.BikeVisuals)
 local InputController = require(script.Parent.InputController)
 
@@ -59,6 +59,12 @@ local session: Session? = nil
 local vehicleAction: RemoteEvent
 
 local NEUTRAL_INPUT = { throttle = 0, brake = 0, frontBrake = 0, steer = 0, lean = 0 }
+-- PhysicsLab's autopilot replaces the player's input with scripted input.
+local inputOverride: (() -> any)? = nil
+
+function RideController.setInputOverride(provider: (() -> any)?)
+	inputOverride = provider
+end
 
 function RideController.getSession(): Session?
 	return session
@@ -173,6 +179,7 @@ local function startSession(model: Model)
 		end
 	end
 	local physics = BikePhysics.new(model, spec, exclude)
+	physics:setWheelieAssist(Settings.get("wheelieAssist"))
 
 	local wind = Instance.new("Sound")
 	wind.Name = "RYDE_Wind"
@@ -216,7 +223,8 @@ local function startSession(model: Model)
 				endSession()
 				return
 			end
-			local input = if Settings.menuOpen then NEUTRAL_INPUT else InputController.read()
+			local input = if Settings.menuOpen then NEUTRAL_INPUT else (inputOverride or InputController.read)()
+			physics:setWheelieAssist(Settings.get("wheelieAssist"))
 			physics:step(dt, input)
 
 			local t = physics.telemetry

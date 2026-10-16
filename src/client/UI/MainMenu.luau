@@ -429,6 +429,7 @@ local function buildSettingsPanel()
 	sectionTitle(body, 1, "GAMEPLAY")
 	settingRow(body, 2, "Speed units", segmented({ "KM/H", "MPH" }, { "kmh", "mph" }, "units"))
 	settingRow(body, 3, "Chase camera", toggle("chaseCamera"))
+	settingRow(body, 6, "Wheelie assist", segmented({ "OFF", "LIGHT", "STD" }, { "Off", "Light", "Standard" }, "wheelieAssist"))
 	settingRow(body, 4, "Show controls while riding", toggle("showControls"))
 	settingRow(body, 5, "Developer overlay (F2)", toggle("debugHud"))
 	sectionTitle(body, 10, "AUDIO")
@@ -449,7 +450,7 @@ local function buildControlsPanel()
 	local body = contentPanel("CONTROLS", "CONTROLS")
 	local rows = {
 		{ "Throttle", "W", "RT" },
-		{ "Brake", "S", "LT" },
+		{ "Brake (hold when stopped: reverse)", "S", "LT" },
 		{ "Steer", "A / D", "Left stick" },
 		{ "Front brake (stoppie)", "Space", "X" },
 		{ "Lean back (wheelie)", "Shift", "Stick back" },
@@ -471,7 +472,7 @@ local function buildControlsPanel()
 		Theme.label(row[2], F.bodyBold, 14, { Position = UDim2.fromScale(0.5, 0), Size = UDim2.new(0.25, 0, 1, 0), TextColor3 = C.text, Parent = line })
 		Theme.label(row[3], F.body, 14, { Position = UDim2.fromScale(0.75, 0), Size = UDim2.new(0.25, 0, 1, 0), TextColor3 = C.textDim, Parent = line })
 	end
-	Theme.label("Tip: wheelies need throttle + lean back, then feather the throttle to balance. Too far and you'll loop out!", F.body, 13, {
+	Theme.label("Tip: wheelies need throttle + lean back. Wheelie assist (Settings) keeps the front near 30° like a real bike's wheelie control; tap S to drop it. Turn assist off for full manual control.", F.body, 13, {
 		TextColor3 = C.warning,
 		TextWrapped = true,
 		Size = UDim2.new(1, -8, 0, 54),

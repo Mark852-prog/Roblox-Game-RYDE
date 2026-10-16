@@ -110,10 +110,38 @@ return function(t)
 
 	t.describe("braking and stoppies", function()
 		t.it("the normal brake (S) never tips a vehicle onto its front wheel", function()
+			-- As the bike decelerates, weight moves forward and the rear tyre can
+			-- transmit less force (grip = load on asphalt, mu = 1). Iterate to the
+			-- steady deceleration and compare with the stoppie threshold.
 			for id, spec in specs do
-				local brakes = spec.config.brakes
-				local decel = (brakes.frontMaxForceN * VehicleMath.NORMAL_BRAKE_FRONT_SHARE + brakes.rearMaxForceN) / spec.totalMassKg
-				assert(decel < VehicleMath.stoppieThreshold(spec, 0), `{id}: {decel} m/s^2 would endo`)
+				local c = spec.config
+				local m, h, L = spec.totalMassKg, c.chassis.comHeightM, c.chassis.wheelbaseM
+				local lf = L - c.chassis.comFromRearM
+				local front = c.brakes.frontMaxForceN * VehicleMath.NORMAL_BRAKE_FRONT_SHARE
+				local a = 0
+				for _ = 1, 50 do
+					local rearLoad = math.max(m * (9.81 * lf - a * h) / L, 0)
+					local rear = math.min(c.brakes.rearMaxForceN, rearLoad * c.tires.longitudinalGrip)
+					a = (front + rear) / m
+				end
+				assert(a < VehicleMath.stoppieThreshold(spec, 0), `{id}: {a} m/s^2 would endo`)
+			end
+		end)
+		t.it("the normal brake stops the dirt bikes from 50 km/h in 12-16 m", function()
+			for _, id in { "VoltraStorm", "KestrelSting" } do
+				local spec = specs[id]
+				local c = spec.config
+				local m, h, L = spec.totalMassKg, c.chassis.comHeightM, c.chassis.wheelbaseM
+				local lf = L - c.chassis.comFromRearM
+				local front = c.brakes.frontMaxForceN * VehicleMath.NORMAL_BRAKE_FRONT_SHARE
+				local a = 0
+				for _ = 1, 50 do
+					local rear = math.min(c.brakes.rearMaxForceN, math.max(m * (9.81 * lf - a * h) / L, 0) * c.tires.longitudinalGrip)
+					a = (front + rear) / m
+				end
+				local v = 50 / 3.6
+				local distance = v * v / (2 * a)
+				assert(distance > 12 and distance < 16, `{id}: {distance} m`)
 			end
 		end)
 		t.it("full front brake on the dirt bikes is enough for a stoppie", function()
