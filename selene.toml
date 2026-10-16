@@ -1,0 +1,5 @@
+# "roblox_lite" works offline (see roblox_lite.yml). If you have internet
+# access you can switch to std = "roblox" after running:
+#   selene generate-roblox-std
+std = "roblox_lite"
+exclude = ["tools/*", "tests/*"]

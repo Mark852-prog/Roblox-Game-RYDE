@@ -1,0 +1,51 @@
+{
+  "name": "RYDE",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Shared": {
+        "$path": "src/shared"
+      }
+    },
+    "ServerScriptService": {
+      "Server": {
+        "$path": "src/server"
+      }
+    },
+    "StarterPlayer": {
+      "$properties": {
+        "CharacterUseJumpPower": false,
+        "CharacterJumpHeight": 4.0,
+        "CharacterWalkSpeed": 16.0
+      },
+      "StarterPlayerScripts": {
+        "Client": {
+          "$path": "src/client"
+        }
+      }
+    },
+    "Workspace": {
+      "$properties": {
+        "Gravity": 28.03,
+        "StreamingEnabled": false
+      },
+      "TestTrack": {
+        "$path": "assets/TestTrack.rbxm"
+      }
+    },
+    "Lighting": {
+      "$properties": {
+        "ClockTime": 14.0,
+        "Brightness": 2.5,
+        "GlobalShadows": true,
+        "OutdoorAmbient": [
+          0.5,
+          0.5,
+          0.52
+        ],
+        "EnvironmentDiffuseScale": 0.6,
+        "EnvironmentSpecularScale": 0.6
+      }
+    }
+  }
+}

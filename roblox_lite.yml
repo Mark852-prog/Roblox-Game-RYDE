@@ -1,0 +1,48 @@
+# Minimal Selene standard library for offline linting.
+# The full "roblox" std needs to download Roblox's API dump; this one only
+# declares the Roblox globals so Selene can still catch unused variables,
+# shadowing, unreachable code, etc. Members are not type-checked.
+---
+base: luau
+name: roblox_lite
+globals:
+  game: { any: true }
+  workspace: { any: true }
+  script: { any: true }
+  plugin: { any: true }
+  shared: { any: true }
+  Enum: { any: true }
+  Instance: { any: true }
+  Vector2: { any: true }
+  Vector3: { any: true }
+  CFrame: { any: true }
+  Color3: { any: true }
+  ColorSequence: { any: true }
+  ColorSequenceKeypoint: { any: true }
+  NumberSequence: { any: true }
+  NumberSequenceKeypoint: { any: true }
+  NumberRange: { any: true }
+  BrickColor: { any: true }
+  UDim: { any: true }
+  UDim2: { any: true }
+  Rect: { any: true }
+  Ray: { any: true }
+  RaycastParams: { any: true }
+  OverlapParams: { any: true }
+  PhysicalProperties: { any: true }
+  TweenInfo: { any: true }
+  Random: { any: true }
+  Region3: { any: true }
+  Font: { any: true }
+  DateTime: { any: true }
+  task: { any: true }
+  tick: { any: true }
+  time: { any: true }
+  wait: { any: true }
+  delay: { any: true }
+  spawn: { any: true }
+  warn: { any: true }
+  typeof: { any: true }
+  elapsedTime: { any: true }
+  settings: { any: true }
+  UserSettings: { any: true }

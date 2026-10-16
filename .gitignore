@@ -1,0 +1,11 @@
+# Studio auto-saves / lock files
+*.rbxl.lock
+*.rbxlx.lock
+# Local working copies of places (the committed build lives in build/)
+/*.rbxl
+/*.rbxlx
+# Editor / OS
+.vscode/settings.json
+.DS_Store
+Thumbs.db
+sourcemap.json
